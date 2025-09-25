@@ -5,7 +5,8 @@ const fs = require("fs");
 const sha512 = require("js-sha512");
 const app = express();
 const jwt_decode = require('jwt-decode');
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,11 +26,11 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: "https://dev-e2po5s5efwus35nn.us.auth0.com/.well-known/jwks.json",
+    jwksUri: `https://${process.env.AUTH0_TENANT}.us.auth0.com/.well-known/jwks.json`,
   }),
 
-  audience: "https://mybank-api-1.test",
-  issuer: "https://dev-e2po5s5efwus35nn.us.auth0.com/",
+  audience: "https://bank-api.test",
+  issuer: `https://${process.env.AUTH0_TENANT}.us.auth0.com/`,
   algorithms: ["RS256"],
 });
 
@@ -47,10 +48,8 @@ var jwtAuthzOptions = { customScopeKey: 'scope', customUserKey: 'auth' };
 app.get("/", async ( request, response) => {
 
   
-    console.log("Welcome to Fady Hakim demo - MyBank API 1");
-  
     response.header("Access-Control-Allow-Origin", "*");
-    response.send({"msg" : "Welcome to Fady Hakim demo"});
+    response.send({"msg" : "Welcome to Bank API"});
    
 });
 
